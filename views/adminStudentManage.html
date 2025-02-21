@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Student Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
 </head>
 
@@ -31,66 +31,43 @@
                 <img src="../assets/megaphone.png" alt="Messages" style="height: 80%; margin-left: 8px;">
             </a>
         </div>
-
     </nav>
 
     <div class="columns" style="min-height: 100vh; margin: 0;">
-
-
         <!-- Main Content -->
         <div class="column p-5" style="flex-grow: 1;">
             <section class="hero is-light">
                 <div class="hero-body">
-                    <p class="title">Welcome to the Admin Dashboard</p>
-                    <p class="subtitle">Manage students, modules, grades, and communcations.</p>
+                    <p class="title">Student Management</p>
+                    <p class="subtitle">Manage student records, view details, and update information.</p>
                 </div>
             </section>
 
-            <!-- Buttons -->
+            <!-- Student Management Actions -->
             <div class="columns mt-5">
                 <div class="column">
-                    <a href="adminStudentManage.html" class="box">
-                        <p class="title is-5">Student Management</p>
-                        <p>View, add, update, or delete student records.</p>
-                    </a>
-                </div>
-                <div class="column">
-                    <div class="box">
-                        <p class="title is-5">Module Management</p>
-                        <p>Manage academic modules and pathways.</p>
+                    <div class="box has-text-centered">
+                        <p class="title is-5">Search Students</p>
+                        <p>Search for student records by name, yeargroup, course or module</p>
+                        <button class="button is-link mt-3">View</button>
                     </div>
                 </div>
                 <div class="column">
-                    <div class="box">
-                        <p class="title is-5">Grade Management</p>
-                        <p>Upload, view, and update student grades.</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="columns">
-                <div class="column">
-                    <div class="box">
-                        <p class="title is-5">Reports & Analytics</p>
-                        <p>View student performance and progression reports.</p>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="box">
-                        <p class="title is-5">Messaging & Notifications</p>
-                        <p>Send messages and notifications to students.</p>
+                    <div class="box has-text-centered">
+                        <p class="title is-5">Add Student</p>
+                        <p>Register a new student into the system.</p>
+                        <button class="button is-success mt-3">Add</button>
                     </div>
                 </div>
             </div>
 
-             <!-- Logo Image -->
-             <div class="has-text-centered mt-5">
-                <img src="../assets/bookStack2.jpg" alt="Grad Guru Logo Image" style="max-width: 60%; height: auto;">
+            <!-- Logo Image -->
+            <div class="has-text-centered mt-5">
+                <img src="../assets/bookStack2.jpg" alt="Student Management Illustration" style="max-width: 60%; height: auto;">
             </div>
-
-
         </div>
     </div>
 </body>
 
 </html>
+
