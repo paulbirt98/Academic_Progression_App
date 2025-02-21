@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +12,28 @@
     <!-- Navbar -->
     <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <a class="navbar-item" href="adminHome.html">Admin Home</a>
+            <a class="navbar-item" href="adminHome.html" style="display: flex; align-items: center;">
+                <img src="assets/house2.png" alt="Home" style="height: 80%; margin-right: 8px; padding-right: 10%;">
+                <span style="color: white;">Home</span>
+            </a>
         </div>
+
+        <div class="navbar-menu is-flex is-justify-content-center" style="flex-grow: 1;">
+            <div class="navbar-item has-text-weight-bold is-size-3" style="font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: white;">
+                GradeGuru
+            </div>
+        </div>
+
+        <div class="navbar-end">
+            <a class="navbar-item" href="messages.html" style="display: flex; align-items: center;">
+                <span class="navbar-item" style="color: white;">Announcements/Messages</span>
+                <img src="assets/megaphone.png" alt="Messages" style="height: 80%; margin-left: 8px;">
+            </a>
+        </div>
+
     </nav>
-    
+
     <div class="columns" style="min-height: 100vh; margin: 0;">
 
         <!-- Sidebar -->
@@ -37,7 +56,7 @@
                 </ul>
             </div>
         </div>
-        
+
         <!-- Main Content -->
         <div class="column p-5" style="flex-grow: 1;">
             <section class="hero is-light">
@@ -46,9 +65,15 @@
                     <p class="subtitle">Manage students, modules, grades, and communcations.</p>
                 </div>
             </section>
-            
-            
+
+            <!-- Logo Image -->
+            <div class="has-text-centered mt-5">
+                <img src="assets/bookStack.jpg" alt="Grad Guru Logo Image" style="max-width: 60%; height: auto;">
+            </div>
+
+
         </div>
     </div>
 </body>
+
 </html>
