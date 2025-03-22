@@ -1,6 +1,10 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const path = require('path');
+
+//middleware
+app.use(express.static(path.join(__dirname, './assets'))); //serving static files
 
 app.set('view engine', 'ejs');
 
