@@ -1,0 +1,30 @@
+<%- include('emmetAbbrev') %>
+<body>
+    
+    <%- include('navbar') %>
+
+        <div class="column p-5" style="flex-grow: 1;">
+            <section class="hero is-light"> <!--make this automatically shrink / increase height as needed??-->
+                <div class="hero-body is-flex is-justify-content-space-between is-align-items-center">
+                    <p class="title"><%= student.first_name + ' ' + student.last_name %></p>
+                    <p class="subtitle"><%= student.student_id_number %></p>
+                </div>
+            </section>
+
+            <section>
+                <p class="title is-4 has-text-centered mt-5"><%= pathway.pathway_name %></p>
+            </section>
+
+            <section>
+                <div class="columns mt-5 mx-3">
+                    <div class=>
+                        <!--need all other data for each academic year blah blah-->
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+
+</body>
+</html>
