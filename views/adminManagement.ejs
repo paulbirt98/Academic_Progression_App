@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <%- include('navbar') %>
+
+        <div class="columns" style="min-height: 100vh; margin: 0;">
+
+            <div class="column p-5" style="flex-grow: 1;">
+            <%- include('adminPageHeader') %>
+
+                <!-- Logo Image -->
+                <%- include('logo') %>
+
+                    <!--List topper, i.e. title, filters, add/delete record buttons-->
+                    <div class="columns mx-3 is-vcentered mt-3">
+                        <div class="column is-one-fifth title">All <%= topic %>s</div>
+                        <div class="column is-three-fifths columns">
+                            <div class="column has-text-weight-bold">Filter by:</div>
+                            <div class="column">Pathway</div>
+                            <div class="column">Stage</div>
+                            <div class="column">
+                                <%= specificFilter %>
+                            </div>
+                        </div>
+                        <div class="column is-one-fifth is-flex is-justify-content-space-between">
+                            <div class="button is-success mx-2" href="">Add Record</div>
+                            <div class="button is-danger" href="">Delete Record</div>
+                        </div>
+                    </div>
+
+                    <!-- Template list of records i.e. student / module-->
+                    <% templateData.forEach((item)=> { %>
+                        <div class="columns mt-5 mx-3">
+                            <div class="column">
+                                <div class="box columns">
+                                    <div class="column has-text-weight-bold">
+                                        <%= item.name %>
+                                    </div>
+                                    <div class="column has-text-weight-bold">
+                                        <%= item.id_code %>
+                                    </div>
+                                    <div class="column has-text-weight-bold">
+                                        <%= item.moreInfo %>
+                                    </div>
+                                    <div class="column is-one-fifth button is-info has-text-black" href="">View <%=topic %> Record</div>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+            </div>
+
+        </div>
+        </div>
+</body>
+
+</html>

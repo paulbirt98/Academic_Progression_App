@@ -26,27 +26,30 @@ app.use(express.static(path.join(__dirname, './assets'))); //serving static file
 app.set('view engine', 'ejs');
 
 app.get('/admin-home', (req, res) => {
-
-    res.render('adminHome');
-
+    res.render('adminHome', {title: "Welcome to the Admin Dashboard", 
+                            summary: "Manage students, modules, grades and communications"});
 });
 
-app.get('/student-management', (req, res) => {
+app.get('/student-management', async (req, res) => {
+    //the values to be used in the page header and list ejs templates
+    const studentTemplateQuery  = `SELECT 
+                            CONCAT(student.first_name, ' ', student.last_name) AS name,
+                            student.student_id_number AS id_code,
+                            CONCAT(pathway.pathway_name, ' - Stage ', student.stage) AS moreInfo
+                        FROM student
+                        JOIN pathway ON student.pathway_id = pathway.pathway_id;`;
 
-    let sqlQuery  = `SELECT 
-                        student.first_name,
-                        student.last_name,
-                        student.student_id_number,
-                        pathway.pathway_name,
-                        student.stage
-                    FROM student
-                    JOIN pathway ON student.pathway_id = pathway.pathway_id;`;
-
-    db.query(sqlQuery, (err, students) => {
-        if(err) throw err;
-        res.render('adminStudentManage', {studentData : students});
-        
-    });
+    try{
+        const [studentTemplateData] = await db.promise().query(studentTemplateQuery);
+        res.render('adminManagement', { title: "Student Management",
+                                        topic: "Student", 
+                                        summary: "Manage student records, view details, and update information.",
+                                        specificFilter: "Name",
+                                        templateData: studentTemplateData});
+    } catch (err) {
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }
 });
 
 app.listen(port, () => {
