@@ -24,26 +24,26 @@
 
             <!-- Logo Image -->
             <%- include('logo') %>
-            
-            <!-- Student Management Actions -->
-            <div class="columns mt-5">
+
+            <!-- List of student profiles -->
+            <div class="columns mx-3 is-vcentered">
+                <div class="column title">All Students</div>
+                <div class="column subtitle">Filter By:</div>
+            </div>
+            <% studentData.forEach((student) => { %>
+            <div class="columns mt-5 mx-3">
                 <div class="column">
-                    <div class="box has-text-centered">
-                        <p class="title is-5">Search Students</p>
-                        <p>Search for student records by name, yeargroup, course or module</p>
-                        <button class="button is-link mt-3">View</button>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="box has-text-centered">
-                        <p class="title is-5">Add Student</p>
-                        <p>Register a new student into the system.</p>
-                        <button class="button is-success mt-3">Add</button>
+                    <div class="box columns">
+                        <div class="column has-text-weight-bold"><%= student.first_name + " " + student.last_name %></div>
+                        <div class="column has-text-weight-bold"><%= student.student_id_number %></div>
+                        <div class="column has-text-weight-bold"><%= student.pathway_name %></div>
+                        <div class="column has-text-weight-bold">Stage: <%= student.stage %></div>
+                        <div class="column button is-info has-text-black">View Record</div>
                     </div>
                 </div>
             </div>
+            <%  }) %>
 
-            
         </div>
     </div>
 </body>

@@ -33,8 +33,20 @@ app.get('/admin-home', (req, res) => {
 
 app.get('/student-management', (req, res) => {
 
-    res.render('adminStudentManage');
+    let sqlQuery  = `SELECT 
+                        student.first_name,
+                        student.last_name,
+                        student.student_id_number,
+                        pathway.pathway_name,
+                        student.stage
+                    FROM student
+                    JOIN pathway ON student.pathway_id = pathway.pathway_id;`;
 
+    db.query(sqlQuery, (err, students) => {
+        if(err) throw err;
+        res.render('adminStudentManage', {studentData : students});
+        
+    });
 });
 
 app.listen(port, () => {
