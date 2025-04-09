@@ -25,9 +25,15 @@ app.use(express.static(path.join(__dirname, './assets'))); //serving static file
 
 app.set('view engine', 'ejs');
 
-app.get('/admin', (req, res) => {
+app.get('/admin-home', (req, res) => {
 
     res.render('adminHome');
+
+});
+
+app.get('/student-management', (req, res) => {
+
+    res.render('adminStudentManage');
 
 });
 

@@ -10,28 +10,7 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="adminHome.html" style="display: flex; align-items: center;">
-                <img src="../assets/house2.png" alt="Home" style="height: 80%; margin-right: 8px; padding-right: 10%;">
-                <span style="color: white;">Home</span>
-            </a>
-        </div>
-
-        <div class="navbar-menu is-active is-flex is-justify-content-center" style="flex-grow: 1;">
-            <div class="navbar-item has-text-weight-bold is-size-3" style="font-family: 'Comic Sans MS', cursive, sans-serif;
-            color: white;">
-                GradeGuru
-            </div>
-        </div>
-
-        <div class="navbar-end">
-            <a class="navbar-item" href="messages.html" style="display: flex; align-items: center;">
-                <span class="navbar-item" style="color: white;">Announcements/Messages</span>
-                <img src="../assets/megaphone.png" alt="Messages" style="height: 80%; margin-left: 8px;">
-            </a>
-        </div>
-    </nav>
+    <%- include('navbar') %>
 
     <div class="columns" style="min-height: 100vh; margin: 0;">
         <!-- Main Content -->
@@ -43,6 +22,9 @@
                 </div>
             </section>
 
+            <!-- Logo Image -->
+            <%- include('logo') %>
+            
             <!-- Student Management Actions -->
             <div class="columns mt-5">
                 <div class="column">
@@ -61,10 +43,7 @@
                 </div>
             </div>
 
-            <!-- Logo Image -->
-            <div class="has-text-centered mt-5">
-                <img src="../assets/bookStack2.jpg" alt="Student Management Illustration" style="max-width: 60%; height: auto;">
-            </div>
+            
         </div>
     </div>
 </body>
