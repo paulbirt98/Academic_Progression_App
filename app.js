@@ -31,13 +31,13 @@ app.get('/admin-home', (req, res) => {
 });
 
 app.get('/student-management', async (req, res) => {
-    //the values to be used in the page header and list ejs templates
+    //the values to be used in the list in the adminManagement ejs
     const studentTemplateQuery  = `SELECT 
-                            CONCAT(student.first_name, ' ', student.last_name) AS name,
-                            student.student_id_number AS id_code,
-                            CONCAT(pathway.pathway_name, ' - Stage ', student.stage) AS moreInfo
-                        FROM student
-                        JOIN pathway ON student.pathway_id = pathway.pathway_id;`;
+                                    CONCAT(student.first_name, ' ', student.last_name) AS name,
+                                    student.student_id_number AS id_code,
+                                    CONCAT(pathway.pathway_name, ' - Stage ', student.stage) AS moreInfo
+                                FROM student
+                                JOIN pathway ON student.pathway_id = pathway.pathway_id;`;
 
     try{
         const [studentTemplateData] = await db.promise().query(studentTemplateQuery);
@@ -46,6 +46,26 @@ app.get('/student-management', async (req, res) => {
                                         summary: "Manage student records, view details, and update information.",
                                         specificFilter: "Name",
                                         templateData: studentTemplateData});
+    } catch (err) {
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }
+});
+
+app.get('/module-management', async (req, res) =>{
+    //the values to be inputted into the list on'management page' ejs template
+    const moduleTemplateQuery = `SELECT
+                                    module_title AS name,
+                                    subject_id AS id_code,
+                                    CONCAT('Credits: ', credit_count) AS moreInfo
+                                FROM module;`
+    try{
+        const [moduleTemplateData] = await db.promise().query(moduleTemplateQuery);
+        res.render('adminManagement', {title: "Module Management",
+                                        topic: "Module",
+                                        summary: "Manage academic modules and pathways.",
+                                        specificFilter: "Pathway",
+                                        templateData: moduleTemplateData});
     } catch (err) {
         console.error('Database error:', err);
         res.sendStatus(500);
