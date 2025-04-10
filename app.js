@@ -61,11 +61,41 @@ app.get('/students/view/:id', async (req, res) => {
                                                         FROM student
                                                         JOIN pathway ON student.pathway_id = pathway.pathway_id
                                                         WHERE student.student_id = ?`, [studentURLId]);
+        //get each year the student has studied and reformat
+        const [yearsStudied] = await db.promise().query(`SELECT DISTINCT 
+                                                            module.academic_year
+                                                        FROM student_module
+                                                        JOIN module ON student_module.module_id = module.module_id
+                                                        WHERE student_module.student_id = ?
+                                                        ORDER BY academic_year; `, [studentURLId]);
+        const [modulesStudied] = await db.promise().query(`SELECT 
+                                                            module.module_title,
+                                                            module.academic_year,
+                                                            student_module.first_grade,
+                                                            student_module.grade_result,
+                                                            student_module.resit_grade,
+                                                            student_module.resit_result,
+                                                            student_module.final_attempt,
+                                                            (SELECT module_pathway.core
+                                                                FROM module_pathway
+                                                                WHERE module_pathway.module_id = module.module_id
+                                                                AND module_pathway.pathway_id = student.pathway_id
+                                                                LIMIT 1
+                                                            ) AS core
+                                                        FROM student_module
+                                                        JOIN module 
+                                                            ON student_module.module_id = module.module_id
+                                                        JOIN student 
+                                                            ON student_module.student_id = student.student_id
+                                                        WHERE student_module.student_id = 27
+                                                        ORDER BY module.academic_year, module.module_title;`);
         res.render('viewStudentRecord', {title: "Student Record - " + studentData[0].student_id_number, 
                                         student: studentData[0],
-                                        pathway: studentPathway[0]});
+                                        pathway: studentPathway[0],
+                                        years: yearsStudied,
+                                        modules: modulesStudied});
     } catch (err){
-        console.err('Database error:', err);
+        console.error('Database error:', err);
         res.sendStatus(500);
     }
 });
