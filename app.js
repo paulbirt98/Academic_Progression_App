@@ -87,8 +87,8 @@ app.get('/students/view/:id', async (req, res) => {
                                                             ON student_module.module_id = module.module_id
                                                         JOIN student 
                                                             ON student_module.student_id = student.student_id
-                                                        WHERE student_module.student_id = 27
-                                                        ORDER BY module.academic_year, module.module_title;`);
+                                                        WHERE student_module.student_id = ?
+                                                        ORDER BY module.academic_year, module.module_title;`, [studentURLId]);
         res.render('viewStudentRecord', {title: "Student Record - " + studentData[0].student_id_number, 
                                         student: studentData[0],
                                         pathway: studentPathway[0],
