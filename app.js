@@ -22,6 +22,7 @@ module.exports = db; //exports db... allows other parts of the app to import and
 
 //middleware
 app.use(express.static(path.join(__dirname, './assets'))); //serving static files
+app.use(express.urlencoded({ extended: true}));
 
 app.set('view engine', 'ejs');
 
@@ -38,7 +39,8 @@ app.get('/students', async (req, res) => {
                                     student.student_id_number AS id_code,
                                     CONCAT(pathway.pathway_name, ' - Stage ', student.stage) AS moreInfo
                                 FROM student
-                                JOIN pathway ON student.pathway_id = pathway.pathway_id;`;
+                                JOIN pathway ON student.pathway_id = pathway.pathway_id
+                                ORDER BY student.last_name, student.first_name`;
     try{
         const [studentTemplateData] = await db.promise().query(studentTemplateQuery);
         res.render('adminManagement', { title: "Student Management",
@@ -119,6 +121,25 @@ app.get('/modules', async (req, res) =>{
         console.error('Database error:', err);
         res.sendStatus(500);
     }
+});
+
+app.get('/add-student', async (req, res) => {
+
+    const pathwayOptionsQuery = `SELECT * FROM pathway;`;
+
+    try{
+        const[pathwayOptions] = await db.promise().query(pathwayOptionsQuery);
+        res.render('addStudent', {title: "Add Student Record",
+                                    summary: "Enter student details to add the record to GradeGuru.",
+                                    pathways: pathwayOptions});
+    } catch {
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }
+});
+
+app.post('/add-student', (req, res) => {
+    const adminInput = {...req.body}
 });
 
 app.listen(port, () => {

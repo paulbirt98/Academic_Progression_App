@@ -1,0 +1,31 @@
+<%- include('emmetAbbrev') %>
+
+    <body>
+        <%- include('navbar') %>
+
+            <div class="columns" style="min-height: 100vh; margin: 0;">
+
+                <div class="column p-5" style="flex-grow: 1;">
+
+                    <%- include('adminPageHeader') %>
+
+                        <div class="columns">
+                            <div class="column mt-5 mx-3">
+                                
+                                <% if(title === "Add Student Record") { %>
+                                  <%-  include('addStudentForm') %>
+                                <% }  %>
+
+                            </div>
+
+                            <div class="column is-two-fifths">
+                                <%- include('logo') %>
+                            </div>
+                        </div>
+
+
+                </div>
+            </div>
+
+
+    </body>

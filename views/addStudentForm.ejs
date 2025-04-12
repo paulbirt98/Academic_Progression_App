@@ -1,0 +1,48 @@
+<form action="/add-student" method="post">
+    <div class="columns">
+        <div class="column field">
+            <label class="label">First Name(s)</label>
+            <div class="control">
+                <input class="input" type="text">
+            </div>
+        </div>
+        <div class="column field">
+            <label class="label">Surname</label>
+            <div class="control">
+                <input class="input" type="text">
+            </div>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column field">
+            <label class="label">Student Number</label>
+            <div class="control">
+                <input class="input" type="text" placeholder="Format 00-XXXX-0000000">
+            </div>
+        </div>
+    </div>
+
+    <div class="columns">
+        <div class="column field">
+            <label class="label">Pathway</label>
+            <div class="control select is-fullwidth">
+                <select>
+                    <option value="" disabled selected>Select from the list</option>
+                    <!--for each loop dynami filling with pathways-->
+                    <option value="">Information Systems</option>
+                    <option value="">Business Analytics</option>
+                </select>
+            </div>
+        </div>
+        <div class="column field">
+            <label class="label">Stage</label>
+            <div class="control">
+                <input class="input" type="number">
+            </div>
+        </div>
+    </div>
+    
+</form>
+
+<a class="button is-success mt-5" href="">Confirm</a>
