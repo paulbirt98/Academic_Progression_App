@@ -15,16 +15,35 @@
                     <!--List topper, i.e. title, filters, add/delete record buttons-->
                     <div class="columns mx-3 is-vcentered mt-3">
                         <div class="column is-one-fifth title">All <%= topic %>s</div>
-                        <div class="column is-three-fifths columns">
-                            <div class="column has-text-weight-bold">Filter by:</div>
-                            <div class="column">Pathway</div>
-                            <div class="column">Stage</div>
-                            <div class="column">
-                                <%= specificFilter %>
+
+                        <div class="column is-three-fifths">
+                            <div class="columns is-vcentered">
+                                <div class="column is-narrow has-text-weight-bold">Filter by: </div>
+
+                                <div class="column">
+                                    <div class="control select is-fullwidth">
+                                        <select>
+                                            <option value="" disabled selected>Pathway</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="control">
+                                        <input class="input" type="number" placeholder="Stage">
+                                    </div>
+                                </div>
+
+                                <div class="column">
+                                    <div class="control">
+                                    <input class="input" type="text" placeholder="Name">
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
                         <div class="column is-one-fifth is-flex is-justify-content-space-between">
-                            <a class="button is-success mx-2" href="/add-student">Add Record</a>
+                            <a class="button is-success mx-2" href="/<%= topic === 'Student' ? 'add-student' : 'add-module'%>">Add Record</a>
                             <div class="button is-danger" href="">Delete Record</div>
                         </div>
                     </div>
@@ -41,7 +60,7 @@
                                         <%= item.id_code %>
                                     </div>
                                     <div class="column has-text-weight-bold">
-                                        <%= item.moreInfo %>
+                                        <%= topic === "Student" ? item.moreInfo : item.moreInfo.replace('AY', '').replace('_', '/') %>
                                     </div>
                                     <div class="column is-one-fifth">
                                         <a class="button is-info has-text-black is-fullwidth" href="/<%=topic.toLowerCase()%>s/view/<%= item.idReference %>">

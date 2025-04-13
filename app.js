@@ -46,7 +46,6 @@ app.get('/students', async (req, res) => {
         res.render('adminManagement', { title: "Student Management",
                                         topic: "Student", 
                                         summary: "Manage student records, view details, and update information.",
-                                        specificFilter: "Name",
                                         templateData: studentTemplateData});
     } catch (err) {
         console.error('Database error:', err);
@@ -108,14 +107,13 @@ app.get('/modules', async (req, res) =>{
                                     module_id AS idReference,
                                     module_title AS name,
                                     subject_id AS id_code,
-                                    CONCAT('Credits: ', credit_count) AS moreInfo
+                                    CONCAT(semester, ' ', academic_year) AS moreInfo
                                 FROM module;`
     try{
         const [moduleTemplateData] = await db.promise().query(moduleTemplateQuery);
         res.render('adminManagement', {title: "Module Management",
                                         topic: "Module",
                                         summary: "Manage academic modules and pathways.",
-                                        specificFilter: "Pathway",
                                         templateData: moduleTemplateData});
     } catch (err) {
         console.error('Database error:', err);
@@ -129,17 +127,81 @@ app.get('/add-student', async (req, res) => {
 
     try{
         const[pathwayOptions] = await db.promise().query(pathwayOptionsQuery);
-        res.render('addStudent', {title: "Add Student Record",
+        res.render('addRecord', {title: "Add Student Record",
                                     summary: "Enter student details to add the record to GradeGuru.",
                                     pathways: pathwayOptions});
-    } catch {
+    } catch (err){
         console.error('Database error:', err);
         res.sendStatus(500);
     }
 });
 
 app.post('/add-student', (req, res) => {
-    const adminInput = {...req.body}
+    const adminInput = {...req.body};
+
+    const addStudentRecord = `INSERT INTO student
+                                    (first_name, 
+                                    last_name,
+                                    student_id_number,
+                                    pathway_id,
+                                    stage)
+                                VALUES (?,?,?,?,?)`;
+    try{
+    db.query(addStudentRecord, [adminInput.firstName, adminInput.lastName, adminInput.studentNo, adminInput.pathway, adminInput.stage]);                         
+    } catch (err){
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }
+    res.send(`Added to the database: ${JSON.stringify(adminInput)}`);
+});
+
+app.get('/add-module', async(req, res) => {
+    const existingPathwaysQuery = 'SELECT pathway_id, pathway_name FROM pathway;'
+    const existingModulesQuery = 'SELECT DISTINCT semester FROM module;';
+    try {
+    const[existingModules] = await db.promise().query(existingModulesQuery);
+    const[existingPathways] = await db.promise().query(existingPathwaysQuery);
+    res.render('addRecord', {title: "Add Module Record",
+                                summary: "Enter module details to add the record to GradeGuru.",
+                                existingModules: existingModules,
+                                existingPathways: existingPathways});
+    } catch (err){
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }           
+});
+
+app.post('/add-module', async (req, res) => {
+    const adminInput = {...req.body};
+
+    const addModuleRecord = `INSERT INTO module
+                                    (semester, 
+                                    subject_id,
+                                    module_title,
+                                    credit_count,
+                                    academic_year)
+                                VALUES (?,?,?,?,?)`;
+
+    const addModuleToPathway = `INSERT INTO module_pathway (module_id, pathway_id)
+                                VALUES (?,?)`;
+
+    try{
+    const [moduleRecord] = await db.promise().query(addModuleRecord, [
+                    adminInput.semester, 
+                    adminInput.subjectId, 
+                    adminInput.moduleTitle, 
+                    adminInput.credits, 
+                    adminInput.academicYear]); 
+    const newID = moduleRecord.insertId;  
+
+    await db.promise().query(addModuleToPathway, [newID, adminInput.pathway]);
+    
+    res.send(`Added to the database: ${JSON.stringify(adminInput)}`);                      
+    } catch (err){
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }
+    
 });
 
 app.listen(port, () => {

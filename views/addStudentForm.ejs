@@ -3,13 +3,13 @@
         <div class="column field">
             <label class="label">First Name(s)</label>
             <div class="control">
-                <input class="input" type="text">
+                <input class="input" type="text" name="firstName" required>
             </div>
         </div>
         <div class="column field">
             <label class="label">Surname</label>
             <div class="control">
-                <input class="input" type="text">
+                <input class="input" type="text" name="lastName" required>
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@
         <div class="column field">
             <label class="label">Student Number</label>
             <div class="control">
-                <input class="input" type="text" placeholder="Format 00-XXXX-0000000">
+                <input class="input" type="text" placeholder="Format 00-XXXX-0000000" name="studentNo" required>
             </div>
         </div>
     </div>
@@ -27,22 +27,23 @@
         <div class="column field">
             <label class="label">Pathway</label>
             <div class="control select is-fullwidth">
-                <select>
+                <select name="pathway" required>
                     <option value="" disabled selected>Select from the list</option>
                     <!--for each loop dynami filling with pathways-->
-                    <option value="">Information Systems</option>
-                    <option value="">Business Analytics</option>
+                    <% pathways.forEach((pathway) =>{ %>
+                        <option value="<%= pathway.pathway_id %>"><%= pathway.pathway_name %></option>
+                    <% }) %>
+                    
                 </select>
             </div>
         </div>
         <div class="column field">
             <label class="label">Stage</label>
             <div class="control">
-                <input class="input" type="number">
+                <input class="input" type="number" name="stage" required>
             </div>
         </div>
     </div>
-    
+   <button class="button is-success mt-5" type="submit">Confirm</button> 
 </form>
 
-<a class="button is-success mt-5" href="">Confirm</a>

@@ -14,7 +14,9 @@
                                 
                                 <% if(title === "Add Student Record") { %>
                                   <%-  include('addStudentForm') %>
-                                <% }  %>
+                                <% } else if(title === "Add Module Record") { %>
+                                  <%- include('addModuleForm') %>
+                                <% } %>
 
                             </div>
 
