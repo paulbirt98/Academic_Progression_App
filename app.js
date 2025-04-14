@@ -182,8 +182,8 @@ app.post('/add-module', async (req, res) => {
                                     academic_year)
                                 VALUES (?,?,?,?,?)`;
 
-    const addModuleToPathway = `INSERT INTO module_pathway (module_id, pathway_id)
-                                VALUES (?,?)`;
+    const addModuleToPathway = `INSERT INTO module_pathway (module_id, pathway_id, year_delivered, core)
+                                VALUES (?,?,?,?)`;
 
     try{
     const [moduleRecord] = await db.promise().query(addModuleRecord, [
@@ -194,7 +194,7 @@ app.post('/add-module', async (req, res) => {
                     adminInput.academicYear]); 
     const newID = moduleRecord.insertId;  
 
-    await db.promise().query(addModuleToPathway, [newID, adminInput.pathway]);
+    await db.promise().query(addModuleToPathway, [newID, adminInput.pathway, adminInput.yearDelivered, adminInput.core]);
     
     res.send(`Added to the database: ${JSON.stringify(adminInput)}`);                      
     } catch (err){

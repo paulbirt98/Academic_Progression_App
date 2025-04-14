@@ -11,7 +11,7 @@
                 </select>
             </div>
         </div>
-        <div class="column field">
+        <div class="column is-one-quarter field">
             <label class="label">Semester</label>
             <div class="control select is-fullwidth">
                 <select name="semester" required>
@@ -21,6 +21,12 @@
                     <% }) %>
                 </select>
             </div>
+        </div>
+        <div class="column is-one-quarter field">
+            <label class="label">Stage Delivered</label>
+                <div class="control">
+                    <input class="input" type="number" name="yearDelivered" required>
+                </div>
         </div>
     </div>
 
@@ -40,11 +46,17 @@
     </div>
 
     <div class="columns">
-        <div class="column field">
-            <label class="label">Credits</label>
-            <div class="control">
-                <input class="input" type="number" name="credits" required>
+        <div class="column">
+            <div class="field">
+                <label class="label">Credits</label>
+                <div class="control">
+                    <input class="input" type="number" name="credits" required>
+                </div>
             </div>
+            <label class="checkbox">
+                <input type="checkbox" name="core" value="1">
+                Core Module
+            </label>
         </div>
         <div class="column field">
             <label class="label">Academic Year</label>
@@ -53,6 +65,7 @@
             </div>
         </div>
     </div>
+
     <button class="button is-success mt-5" type="submit">Confirm</button>
 </form>
 
