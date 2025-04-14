@@ -1,0 +1,72 @@
+<%- include('emmetAbbrev') %>
+
+<body>
+
+    <%-include('navbar') %>
+
+    <div class="column p-5" style="flex-grow: 1;">
+
+        <%- include('recordPageHeader') %>
+
+        <p class="title is-3 mx-4 mt-5">Results</p>
+        
+        <div class="columns">
+            <div class="column is-half">
+                <% students.forEach((student) => { %>
+
+                    <% if(student.grade_result === "pass" || student.resit_result === "pass" || student.grade_result === "pass capped" || student.grade_result === "pass capped") { %>
+                        <div class="box mx-3 mt-5 has-background-success" href="/students/view/<%=student.student_id%>">
+                    <% } else if(student.resit_result === "excused") { %>
+                        <div class="box mx-3 mt-5 has-background-warning" href="/students/view/<%=student.student_id%>">
+                    <% } else { %>
+                        <div class="box mx-3 mt-5 has-background-danger" href="/students/view/<%=student.student_id%>">
+                    <% } %>
+                
+                            <div class="columns has-text-centered">
+                                <div class="column has-text-weight-bold">
+                                    <a href="/students/view/<%=student.student_id%>" class="has-text-dark"><%= student.name %></a>
+                                </div>
+                                <div class="column">
+                                    <p>
+                                        <% if(student.first_grade === null && student.grade_result === "fail") { %>
+                                            0 <% } else if (student.first_grade === null && (student.grade_result === "absent" || student.grade_result === "excused")) { %>
+                                                N/A 
+                                            <% } else { %>
+                                                <%= student.first_grade %>
+                                            <% } %>
+                                    </p>  
+                                </div>
+                                <div class="column">
+                                    <p>
+                                        <% if (student.grade_result === "pass" || student.grade_result === "pass capped") { %>
+                                            N/A
+                                        <% } else { %>
+                                            <%= student.resit_grade %>
+                                        <% } %>
+                                    </p>
+                                </div>
+                                <div class="column">
+                                    <p>
+                                        <% if(student.grade_result === "pass" || student.resit_result === "pass") { %>
+                                            Pass
+                                        <% } else if(student.grade_result === "pass capped" || student.grade_result === "pass capped") { %>
+                                            Pass Capped
+                                        <% } else if(student.resit_result === "excused") { %>
+                                            Excused
+                                        <% } else { %>
+                                            Fail
+                                        <% } %>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                <% }); %>
+            </div>
+
+            <div class="column mx-3 mt-5">
+                <%- include('logo') %>
+            </div>
+        </div>
+    </div>
+
+</body>
