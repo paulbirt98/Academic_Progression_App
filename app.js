@@ -3,6 +3,8 @@ const app = express();
 const port = 3000;
 const mysql = require('mysql2');
 const path = require('path');
+const sessions = require('express-session');
+const oneHour = 1000 * 60 * 60 * 1;
 
 //database connection
 const db = mysql.createPool({
@@ -23,33 +25,47 @@ module.exports = db; //exports db... allows other parts of the app to import and
 //middleware
 app.use(express.static(path.join(__dirname, './assets'))); //serving static files
 app.use(express.urlencoded({ extended: true}));
+app.use(sessions({
+    secret: "userS3ss1onS3cr3t",
+    saveUninitialized: true,
+    cookie: {maxAge: oneHour},
+    resave: false
+}));
 
 app.set('view engine', 'ejs');
 
 app.get('/admin-home', (req, res) => {
-    res.render('adminHome', {title: "Admin Dashboard", 
-                            summary: "Manage students, modules, grades and communications"});
+    if (req.session.authen) {
+        res.render('adminHome', {title: "Admin Dashboard", 
+                                summary: "Manage students, modules, grades and communications"});
+    } else {
+        res.redirect('/');
+    }
 });
 
 app.get('/students', async (req, res) => {
-    //the values to be used in the list in the adminManagement ejs
-    const studentTemplateQuery  = `SELECT 
-                                    student.student_id AS idReference,
-                                    CONCAT(student.first_name, ' ', student.last_name) AS name,
-                                    student.student_id_number AS id_code,
-                                    CONCAT(pathway.pathway_name, ' - Stage ', student.stage) AS moreInfo
-                                FROM student
-                                JOIN pathway ON student.pathway_id = pathway.pathway_id
-                                ORDER BY student.last_name, student.first_name`;
-    try{
-        const [studentTemplateData] = await db.promise().query(studentTemplateQuery);
-        res.render('adminManagement', { title: "Student Management",
-                                        topic: "Student", 
-                                        summary: "Manage student records, view details, and update information.",
-                                        templateData: studentTemplateData});
-    } catch (err) {
-        console.error('Database error:', err);
-        res.sendStatus(500);
+    if(req.session.authen){
+        //the values to be used in the list in the adminManagement ejs
+        const studentTemplateQuery  = `SELECT 
+                                        student.student_id AS idReference,
+                                        CONCAT(student.first_name, ' ', student.last_name) AS name,
+                                        student.student_id_number AS id_code,
+                                        CONCAT(pathway.pathway_name, ' - Stage ', student.stage) AS moreInfo
+                                    FROM student
+                                    JOIN pathway ON student.pathway_id = pathway.pathway_id
+                                    ORDER BY student.last_name, student.first_name`;
+        try{
+            const [studentTemplateData] = await db.promise().query(studentTemplateQuery);
+            res.render('adminManagement', { title: "Student Management",
+                                            topic: "Student", 
+                                            summary: "Manage student records, view details, and update information.",
+                                            templateData: studentTemplateData});
+        } catch (err) {
+            console.error('Database error:', err);
+            res.sendStatus(500);
+        }
+    } else {
+        res.redirect('/');
     }
 });
 
@@ -278,7 +294,7 @@ app.get('/grade-upload', async (req, res) => {
 
 });
 
-app.get('/login', async (req, res) =>{
+app.get('/', async (req, res) =>{
     
     try{
         res.render('loginPage')
@@ -286,6 +302,40 @@ app.get('/login', async (req, res) =>{
 
     }
     
+});
+
+app.post('/', (req, res) => {
+    const userEmail = req.body.email;
+    const userPassword = req.body.password;
+
+    const checkDetails = `SELECT * 
+                            FROM authentication 
+                            WHERE 
+                            user_email = ?
+                            AND
+                            user_password = ?`;
+
+                            console.log("Email:", userEmail);
+console.log("Password:", userPassword);
+
+    
+    db.query(checkDetails, [userEmail, userPassword], (err, rows) =>{
+
+        if(err){
+            console.error('Database error', err);
+        } else {
+            if(rows.length > 0){
+                req.session.authen = rows[0].id;
+                res.redirect('admin-home');
+            } else {
+                res.redirect('/');
+            }
+        }
+        console.log("Rows returned:", rows);
+    });
+
+    
+
 });
 
 app.listen(port, () => {
