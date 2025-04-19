@@ -266,6 +266,28 @@ app.get('/modules/view/:id', async (req, res) => {
     }
 });
 
+app.get('/grade-upload', async (req, res) => {
+
+    try{
+        res.render('gradeUpload', {title: "Grade Upload",
+                                    summary: `Upload student grades in bulk from a CSV file. (Please ensure it is in the standardised format)`
+        });
+    } catch (err) {
+
+    }
+
+});
+
+app.get('/login', async (req, res) =>{
+    
+    try{
+        res.render('loginPage')
+    } catch (err) {
+
+    }
+    
+});
+
 app.listen(port, () => {
     console.log('Server is running on port 3000');
 });
