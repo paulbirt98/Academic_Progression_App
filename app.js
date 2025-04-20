@@ -45,24 +45,27 @@ app.post('/', (req, res) => {
 
     const checkDetails = `SELECT * 
                             FROM authentication 
-                            WHERE 
-                            user_email = ?
-                            AND
-                            user_password = ?`;
+                            WHERE user_email = ? AND user_password = ?`;
 
     
     db.query(checkDetails, [userEmail, userPassword], (err, user) =>{
 
         if(err){
             console.error('Database error', err);
-        } else {
-            if(user.length > 0){
-                req.session.isAdmin = user[0].admin;
+            res.sendStatus(500);
+        }
+
+            if(user.length > 0 && user[0].admin === 1){
+                req.session.isAdmin = true;
                 res.redirect('/admin/admin-home');
+            } else if (user.length > 0 && user[0].admin === 0){
+                req.session.studentId = user[0].student_id;
+                req.session.isStudent = true;
+                res.redirect('/student/student-home')
+
             } else {
                 res.redirect('/');
             }
-        }
 
     });
 
