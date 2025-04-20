@@ -12,6 +12,7 @@ router.get('/student-home', async (req, res) =>{
         try{
             const [queryResult] = await db.promise().query(studentNameQuery, req.session.studentId);
             res.render('studentHomepage', {title: 'Student Homepage',
+                                            isStudent: true,
                                             studentName: queryResult[0].first_name});
         } catch (err) {
             console.error('Database error:', err);
