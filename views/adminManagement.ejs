@@ -43,7 +43,7 @@
 
                         </div>
                         <div class="column is-one-fifth is-flex is-justify-content-space-between">
-                            <a class="button is-success mx-2" href="/<%= topic === 'Student' ? 'add-student' : 'add-module'%>">Add Record</a>
+                            <a class="button is-success mx-2" href="/admin/<%= topic === 'Student' ? 'add-student' : 'add-module'%>">Add Record</a>
                             <div class="button is-danger" href="">Delete Record</div>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                                         <%= topic === "Student" ? item.moreInfo : item.moreInfo.replace('AY', '').replace('_', '/') %>
                                     </div>
                                     <div class="column is-one-fifth">
-                                        <a class="button is-info has-text-black is-fullwidth" href="/<%=topic.toLowerCase()%>s/view/<%= item.idReference %>">
+                                        <a class="button is-info has-text-black is-fullwidth" href="/admin/<%=topic.toLowerCase()%>s/view/<%= item.idReference %>">
                                             View <%=topic %> Record
                                         </a>
                                     </div>

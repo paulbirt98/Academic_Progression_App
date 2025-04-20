@@ -15,16 +15,16 @@
                 <% students.forEach((student) => { %>
 
                     <% if(student.grade_result === "pass" || student.resit_result === "pass" || student.grade_result === "pass capped" || student.grade_result === "pass capped") { %>
-                        <div class="box mx-3 mt-5 has-background-success" href="/students/view/<%=student.student_id%>">
+                        <div class="box mx-3 mt-5 has-background-success" href="/admin/students/view/<%=student.student_id%>">
                     <% } else if(student.resit_result === "excused") { %>
-                        <div class="box mx-3 mt-5 has-background-warning" href="/students/view/<%=student.student_id%>">
+                        <div class="box mx-3 mt-5 has-background-warning" href="/admin/students/view/<%=student.student_id%>">
                     <% } else { %>
-                        <div class="box mx-3 mt-5 has-background-danger" href="/students/view/<%=student.student_id%>">
+                        <div class="box mx-3 mt-5 has-background-danger" href="/admin/students/view/<%=student.student_id%>">
                     <% } %>
                 
                             <div class="columns has-text-centered">
                                 <div class="column has-text-weight-bold">
-                                    <a href="/students/view/<%=student.student_id%>" class="has-text-dark"><%= student.name %></a>
+                                    <a href="/admin/students/view/<%=student.student_id%>" class="has-text-dark"><%= student.name %></a>
                                 </div>
                                 <div class="column">
                                     <p>
