@@ -12,6 +12,9 @@ const calculateGrade = (student) => {
         return 40;
     } else if ((student.grade_result === "excused" && student.resit_result === null) || student.resit_result === "excused") {
         return null;
+    } else {
+        //check and return highest of the two grades
+        return (student.first_grade === null && student.resit_grade === null) ? null : Math.max(student.first_grade, student.resit_grade);
     }
 };
 
@@ -290,10 +293,10 @@ router.get('/modules/view/:id', async (req, res) => {
 
             let totalEnrolled = studentsEnrolled.length;
             let passes = 0;
-            let fails = 0;
             let excused = 0;
             let totalMarks = 0;
             let resits = 0;
+            let gradedStudents = 0;
 
             studentsEnrolled.forEach ((student) =>{
                 const studentGrade = calculateGrade(student);
@@ -302,30 +305,31 @@ router.get('/modules/view/:id', async (req, res) => {
                 } else if (studentGrade >= 40) {
                     totalMarks += studentGrade;
                     passes++;
+                    gradedStudents++;
                 } else if (studentGrade < 40) {
                     totalMarks += studentGrade;
-                    fails++;
+                    gradedStudents++;
                 }
 
-                if(student.resit_result !== null){
+                if(student.resit_result){
                     resits++;
                 }
             });
-
-            const gradedStudents = passes + fails;
-
-            const averageGrade = calculateAverageGrade(gradedStudents, totalMarks);
+            console.log(gradedStudents);
+            const passRate = calculateRate(passes, gradedStudents);
+            const resitRate = calculateRate(resits, gradedStudents);
+            const averageGrade = calculateAverageGrade(totalMarks, gradedStudents);
 
             res.render('viewModuleRecord', {title: "Module Record - " + moduleData[0].id_number + " - " + moduleURLId,
                                             topic: "module",
                                             record: moduleData[0],
                                             pathway: pathwayName[0],
                                             students: studentsEnrolled,
-                                            passes,
-                                            fails,
+                                            passRate,
                                             excused,
                                             totalEnrolled,
                                             resits,
+                                            resitRate,
                                             averageGrade,
                                             isStudent: false});
         } catch(err){
