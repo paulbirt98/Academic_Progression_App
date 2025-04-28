@@ -2,10 +2,32 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database');
 
+const calculateGrade = (student) => {
+
+    if (student.grade_result === "pass"){
+        return student.first_grade;
+    } else if (student.resit_result === "pass"){
+        return student.resit_grade;
+    } else if (student.grade_result === "pass capped" || student.resit_result === "pass capped") {
+        return 40;
+    } else if ((student.grade_result === "excused" && student.resit_result === null) || student.resit_result === "excused") {
+        return null;
+    }
+};
+
+const calculateAverageGrade = (totalGrades, totalStudents) => {
+    return totalGrades / totalStudents;
+};
+
+const calculateRate = (rate, total) => {
+    return rate / total * 100;
+};
+
 router.get('/admin-home', (req, res) => {
     if (req.session.isAdmin) {
         res.render('adminHome', {title: "Admin Dashboard", 
-                                summary: "Manage students, modules, grades and communications"});
+                                summary: "Manage students, modules, grades and communications",
+                                isStudent: false}); //for the 'home' link on the navbar
     } else {
         res.redirect('/');
     }
@@ -27,7 +49,8 @@ router.get('/students', async (req, res) => {
             res.render('adminManagement', { title: "Student Management",
                                             topic: "Student", 
                                             summary: "Manage student records, view details, and update information.",
-                                            templateData: studentTemplateData});
+                                            templateData: studentTemplateData,
+                                            isStudent: false});
         } catch (err) {
             console.error('Database error:', err);
             res.sendStatus(500);
@@ -81,8 +104,9 @@ router.get('/students/view/:id', async (req, res) => {
                                     WHERE student_module.student_id = ?
                                     ORDER BY module.academic_year, module.module_title;`
 
+        const studentURLId = req.params.id;
+
         try{
-            const studentURLId = req.params.id;
             const [studentData] = await db.promise().query(studentDataQuery, [studentURLId]);
             const [studentPathway] = await db.promise().query(studentPathwayQuery, [studentURLId]);
             //get each year the student has studied and reformat
@@ -93,7 +117,8 @@ router.get('/students/view/:id', async (req, res) => {
                                             record: studentData[0],
                                             pathway: studentPathway[0],
                                             years: yearsStudied,
-                                            modules: modulesStudied});
+                                            modules: modulesStudied,
+                                            isStudent: false});
         } catch (err){
             console.error('Database error:', err);
             res.sendStatus(500);
@@ -118,7 +143,8 @@ router.get('/modules', async (req, res) =>{
             res.render('adminManagement', {title: "Module Management",
                                             topic: "Module",
                                             summary: "Manage academic modules and pathways.",
-                                            templateData: moduleTemplateData});
+                                            templateData: moduleTemplateData,
+                                            isStudent: false});
         } catch (err) {
             console.error('Database error:', err);
             res.sendStatus(500);
@@ -137,7 +163,8 @@ router.get('/add-student', async (req, res) => {
             const[pathwayOptions] = await db.promise().query(pathwayOptionsQuery);
             res.render('addRecord', {title: "Add Student Record",
                                         summary: "Enter student details to add the record to GradeGuru.",
-                                        pathways: pathwayOptions});
+                                        pathways: pathwayOptions,
+                                        isStudent: false});
         } catch (err){
             console.error('Database error:', err);
             res.sendStatus(500);
@@ -177,7 +204,8 @@ router.get('/add-module', async(req, res) => {
         res.render('addRecord', {title: "Add Module Record",
                                     summary: "Enter module details to add the record to GradeGuru.",
                                     existingModules: existingModules,
-                                    existingPathways: existingPathways});
+                                    existingPathways: existingPathways,
+                                    isStudent: false});
         } catch (err){
             console.error('Database error:', err);
             res.sendStatus(500);
@@ -259,11 +287,47 @@ router.get('/modules/view/:id', async (req, res) => {
             const [moduleData] = await db.promise().query(moduleDataQuery, [moduleURLId]);
             const [pathwayName] = await db.promise().query(pathwayNameQuery, [moduleURLId]);
             const [studentsEnrolled] = await db.promise().query(studentsEnrolledQuery, [moduleURLId]);
+
+            let totalEnrolled = studentsEnrolled.length;
+            let passes = 0;
+            let fails = 0;
+            let excused = 0;
+            let totalMarks = 0;
+            let resits = 0;
+
+            studentsEnrolled.forEach ((student) =>{
+                const studentGrade = calculateGrade(student);
+                if(studentGrade === null) {
+                    excused++;
+                } else if (studentGrade >= 40) {
+                    totalMarks += studentGrade;
+                    passes++;
+                } else if (studentGrade < 40) {
+                    totalMarks += studentGrade;
+                    fails++;
+                }
+
+                if(student.resit_result !== null){
+                    resits++;
+                }
+            });
+
+            const gradedStudents = passes + fails;
+
+            const averageGrade = calculateAverageGrade(gradedStudents, totalMarks);
+
             res.render('viewModuleRecord', {title: "Module Record - " + moduleData[0].id_number + " - " + moduleURLId,
                                             topic: "module",
                                             record: moduleData[0],
                                             pathway: pathwayName[0],
-                                            students: studentsEnrolled});
+                                            students: studentsEnrolled,
+                                            passes,
+                                            fails,
+                                            excused,
+                                            totalEnrolled,
+                                            resits,
+                                            averageGrade,
+                                            isStudent: false});
         } catch(err){
             console.error('Database error:', err);
             res.sendStatus(500);
@@ -278,8 +342,8 @@ router.get('/grade-upload', async (req, res) => {
     if(req.session.isAdmin){
         try{
             res.render('gradeUpload', {title: "Grade Upload",
-                                        summary: `Upload student grades in bulk from a CSV file. (Please ensure it is in the standardised format)`
-            });
+                                        summary: `Upload student grades in bulk from a CSV file. (Please ensure it is in the standardised format)`,
+                                        isStudent: false});
         } catch (err) {
 
         }

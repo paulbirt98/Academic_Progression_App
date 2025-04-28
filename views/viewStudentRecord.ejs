@@ -20,13 +20,18 @@
                     <% modules.forEach((module) => { 
                         if(module.academic_year === year.academic_year) { 
                     %>
-                        <% if(module.core === 1 || module.final_attempt === 1) { %>                        
-                        <div class="box mx-3 has-text-centered has-background-warning">
-                        <% } else { %>
-                            <div class="box mx-3 has-text-centered"> 
-                        <% } %> 
-
-                                <p class="subtitle is-6"><%= module.module_title %></p>
+                        
+                        <div class="box mx-3 has-text-centered"> 
+                        
+                                <p class="subtitle is-6">
+                                    <%= module.module_title %>
+                                    <% if (module.core) { %>
+                                        <strong>(Core)</strong>
+                                    <% } %>
+                                    <% if (module.final_attempt) { %>
+                                        <strong>(Repeat)</strong>
+                                    <% } %>
+                                </p>
                                 <div class="columns">
                                     <div class="column">
                                         <p>Result</p>
@@ -52,11 +57,8 @@
                     <%  } }) %>
                     </div>
                 <% }); %>
-
-
             </div>
         </section>
-
     </div>
 
 

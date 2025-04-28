@@ -7,11 +7,10 @@
     <div class="column p-5" style="flex-grow: 1;">
 
         <%- include('recordPageHeader') %>
-
-        <p class="title is-3 mx-4 mt-5">Results</p>
         
         <div class="columns">
             <div class="column is-half">
+                <p class="title is-3 mx-4 mt-5">Results</p>
                 <% students.forEach((student) => { %>
 
                     <% if(student.grade_result === "pass" || student.resit_result === "pass" || student.grade_result === "pass capped" || student.grade_result === "pass capped") { %>
@@ -63,8 +62,13 @@
                 <% }); %>
             </div>
 
-            <div class="column mx-3 mt-5">
-                <%- include('logo') %>
+            <div class="column">
+                <p class="title is-3 mx-4 mt-5">Module Progression Stats</p>
+
+                <p>Total <%= totalEnrolled %></p>
+                <p>Passing: <%= passes %></p>
+                <p>Failing: <%= fails %></p>
+                <p></p>
             </div>
         </div>
     </div>
