@@ -37,7 +37,7 @@ app.set('view engine', 'ejs');
 
 app.get('/', (req, res) =>{
     
-        res.render('loginPage');
+        res.render('loginPage', {query: req.query});
     
 });
 
@@ -66,7 +66,7 @@ app.post('/', (req, res) => {
                 res.redirect('/student/student-home')
 
             } else {
-                res.redirect('/');
+                res.redirect('/?loginFailure=1');
             }
 
     });

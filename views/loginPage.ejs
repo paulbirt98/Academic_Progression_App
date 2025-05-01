@@ -46,6 +46,11 @@
                     </div>
 
                     <button class="button is-success" type="submit" value="login">Log In</button> 
+                    <%if (query.loginFailure) { %>
+                        <div class="notification is-light mt-4 mx-3">
+                            Incorrect details entered, please try again.
+                        </div>
+                    <% } %>
                 </form>
               </div>
             </div>

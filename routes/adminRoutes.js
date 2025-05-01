@@ -453,6 +453,7 @@ router.get('/add-student', async (req, res) => {
                 title: "Add Student Record",
                 summary: "Enter student details to add the record to GradeGuru.",
                 pathways: pathwayOptions,
+                query: req.query,
                 isStudent: false
             });
         } catch (err) {
@@ -476,11 +477,12 @@ router.post('/add-student', (req, res) => {
                                 VALUES (?,?,?,?,?)`;
     try {
         db.query(addStudentRecord, [adminInput.firstName, adminInput.lastName, adminInput.studentNo, adminInput.pathway, adminInput.stage]);
+        res.redirect('/admin/add-student?success=1');
     } catch (err) {
         console.error('Database error:', err);
         res.sendStatus(500);
     }
-    res.send(`Added to the database: ${JSON.stringify(adminInput)}`);
+    
 });
 
 router.get('/add-module', async (req, res) => {
@@ -496,6 +498,7 @@ router.get('/add-module', async (req, res) => {
                 summary: "Enter module details to add the record to GradeGuru.",
                 existingModules: existingModules,
                 existingPathways: existingPathways,
+                query: req.query,
                 isStudent: false
             });
         } catch (err) {
@@ -532,7 +535,7 @@ router.post('/add-module', async (req, res) => {
 
         await db.promise().query(addModuleToPathway, [newID, adminInput.pathway, adminInput.yearDelivered, adminInput.core]);
 
-        res.send(`Added to the database: ${JSON.stringify(adminInput)}`);
+        res.redirect('/admin/add-module?success=1');
     } catch (err) {
         console.error('Database error:', err);
         res.sendStatus(500);
@@ -651,6 +654,7 @@ router.get('/grade-upload', async (req, res) => {
     }
 });
 
+
 router.get('/messaging', async (req, res) => {
 
     if (req.session.isAdmin) {
@@ -664,7 +668,8 @@ router.get('/messaging', async (req, res) => {
                 isStudent: false,
                 title: "Messaging & Announcements",
                 summary: "Send an Announcement to a cohort or a Message to an Individual",
-                pathways: pathwayOptions
+                pathways: pathwayOptions,
+                query: req.query
             });
         } catch (err) {
             console.error('Database error:', err);
@@ -700,8 +705,8 @@ router.post('/messaging/announcement', async (req, res) => {
         for (const { student_id } of studentCohort) {
             await db.promise().query(addToLinkTable, [student_id, announcementId])
         };
-
-        res.redirect('/admin/messaging');
+        
+        res.redirect('/admin/messaging?announcementSuccess=1');
     } catch (err) {
         console.error('Database error:', err);
         res.sendStatus(500);
@@ -726,7 +731,7 @@ router.post('/messaging/message', async (req, res) => {
 
         await db.promise().query(addMessage, [studentId, message.messageBody]);
 
-        res.redirect('/admin/messaging');
+        res.redirect('/admin/messaging?messageSuccess=1');
     } catch (err) {
         console.error('Database error:', err);
         res.sendStatus(500);

@@ -19,6 +19,12 @@
                         <% } else if (isStudent) { %>
                             <%-include('studentAnnouncements')%>
                         <% } %>
+
+                        <%if (query.messageSuccess) { %>
+                            <div class="notification is-light mt-4 mx-3">
+                                Announcement sent successfully!
+                            </div>
+                        <% } %>
                     </section>
 
                     <section>
@@ -30,6 +36,12 @@
                             <%-include('adminMessageForm') %>
                         <% } else if (isStudent) { %>
                             <%-include('studentMessages')%>
+                        <% } %>
+
+                        <%if (query.messageSuccess) { %>
+                            <div class="notification is-light mt-4 mx-3">
+                                Message sent successfully!
+                            </div>
                         <% } %>
 
                     </section>

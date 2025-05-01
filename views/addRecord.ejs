@@ -18,6 +18,11 @@
                                   <%- include('addModuleForm') %>
                                 <% } %>
 
+                                <%if (query.success) { %>
+                                    <div class="notification is-light mt-4">
+                                        Record added successfully!
+                                    </div>
+                                <% } %>
                             </div>
 
                             <div class="column is-two-fifths">
