@@ -1,0 +1,42 @@
+<%-include('documentHead') %>
+
+    <body>
+
+        <%- include('navbar') %>
+
+            <div class="column p-5" style="flex-grow: 1;">
+
+                <%-include('adminPageHeader')%>
+
+                
+                    <section>
+                        <div class="title is-2 has-text-centered mt-3">
+                            Announcements
+                        </div>
+
+                        <% if(!isStudent) { %>
+                            <%-include('adminAnnouncementForm') %>
+                        <% } else if (isStudent) { %>
+                            <%-include('studentAnnouncements')%>
+                        <% } %>
+                    </section>
+
+                    <section>
+                        <div class="title is-2 has-text-centered mt-4">
+                            Messages
+                        </div>
+
+                        <% if(!isStudent) { %>
+                            <%-include('adminMessageForm') %>
+                        <% } else if (isStudent) { %>
+                            <%-include('studentMessages')%>
+                        <% } %>
+
+                    </section>
+
+                
+            </div>
+
+    </body>
+
+</html>

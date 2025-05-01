@@ -116,6 +116,7 @@ router.get('/my-grades', async (req, res) => {
                 pathway: studentPathway[0],
                 years: yearsStudied,
                 modules: modulesStudied,
+                studentId: studentId,
                 isStudent: true});
         } catch (err) {
             console.error('Database error:', err);

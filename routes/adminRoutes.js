@@ -171,6 +171,10 @@ router.get('/students/view/:id', async (req, res) => {
     }
 });
 
+router.get('/student-progression', async (req, res) =>{
+    res.render('studentProgressionSearch');
+});
+
 router.get('/student-progression/:id', async (req, res) => {
 
     if (req.session.isAdmin) {
@@ -567,6 +571,88 @@ router.get('/grade-upload', async (req, res) => {
     } else {
         res.redirect('/');
     }
+});
+
+router.get('/messaging', async (req, res) =>{
+
+    if(req.session.isAdmin){
+
+        const pathwayOptionsQuery= `SELECT * FROM pathway`;
+
+        try{
+            const [pathwayOptions] = await db.promise().query(pathwayOptionsQuery);
+
+            res.render('messaging', {isStudent: false,
+                                    title: "Messaging & Announcements",
+                                    summary: "Send an Announcement to a cohort or a Message to an Individual",
+                                    pathways: pathwayOptions
+            });
+        } catch (err) {
+            console.error('Database error:', err);
+            res.sendStatus(500);
+        }
+
+    } else {
+        res.redirect('/');
+    }
+
+});
+
+router.post('/messaging/announcement', async (req, res) =>{
+    const announcement = {...req.body};
+
+    const addAnouncement = `INSERT INTO announcement
+                                (announcement_body)
+                            VALUES (?)`
+
+    const cohortQuery = ` SELECT student_id FROM student
+                         WHERE pathway_id = ? AND stage = ?`
+
+    const addToLinkTable = `INSERT INTO student_announcement
+                                (student_id, announcement_id)
+                            VALues(?,?)`
+
+    try{
+        const [announcementInput] = await db.promise().query(addAnouncement, [announcement.announcement]);
+        const announcementId = announcementInput.insertId;
+
+        const [studentCohort] = await db.promise().query(cohortQuery, [announcement.pathway, announcement.stage])
+
+        for(const {student_id} of studentCohort) {
+            await db.promise().query(addToLinkTable, [student_id, announcementId])
+        };
+
+        res.redirect('/admin/messaging');
+    } catch (err){
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }
+
+    
+});
+
+router.post('/messaging/message', async (req, res) =>{
+    const message = {...req.body};
+
+    const addMessage = `INSERT INTO message
+                            (student_id, message_body)
+                        VALUES (?,?)`
+
+    const studentQuery = `SELECT student_id FROM student
+                        WHERE student_id_number = ?`
+
+    try{
+        const [student] = await db.promise().query(studentQuery, message.studentNo);
+        const studentId = student[0].student_id;
+
+        await db.promise().query(addMessage, [studentId, message.messageBody]);
+
+        res.redirect('/admin/messaging');
+    } catch (err){
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }
+
 });
 
 module.exports = router;
