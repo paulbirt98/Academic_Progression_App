@@ -1,0 +1,74 @@
+<%-include('documentHead') %>>
+
+<body>
+
+    <%- include('navbar') %>
+
+        <div class="column p-5" style="flex-grow: 1;">
+
+            <%- include('recordPageHeader') %>
+
+                
+                <div class="columns mt-5 mx-3" style="white-space: nowrap;">
+                    <form action="/admin/edit-grades/<%= studentId %>" method="post">
+                        <% let counter = 1;
+                         years.forEach((year) => {
+                            modules.forEach((module) => { 
+                                if (module.academic_year === year.academic_year) { %>
+                                    <div class="columns">
+                                        <input type="hidden" name="moduleId<%= counter %>" value="<%= module.module_id %>">
+
+                                        <div class="column field">
+                                            <label class="label">Module</label>
+                                            <div class="control">
+                                                <input class="input" type="text" name="moduleTitle<%= counter%>" readonly value="<%= module.module_title%>">
+                                            </div>
+                                        </div>
+                                        <div class="column field">
+                                            <label class="label">Year</label>
+                                            <div class="control">
+                                                <input class="input" type="text" name="year<%= counter%>" readonly value="<%= module.academic_year%>">
+                                            </div>
+                                        </div>
+                                        <div class="column field">
+                                            <label class="label">Grade</label>
+                                            <div class="control">
+                                                <input class="input" type="text" name="grade<%= counter%>" value="<%= module.first_grade%>">
+                                            </div>
+                                        </div>
+                                        <div class="column field">
+                                            <label class="label">Result</label>
+                                            <div class="control">
+                                                <input class="input" type="text" name="graderesult<%= counter%>" value="<%= module.grade_result%>">
+                                            </div>
+                                        </div>
+                                        <div class="column field">
+                                            <label class="label">Resit</label>
+                                            <div class="control">
+                                                <input class="input" type="text" name="resit<%= counter%>" value="<%= module.resit_grade%>">
+                                            </div>
+                                        </div>
+                                        <div class="column field">
+                                            <label class="label">Resit Result</label>
+                                            <div class="control">
+                                                <input class="input" type="text" name="resitresult<%= counter%>" value="<%= module.resit_result%>">
+                                            </div>
+                                        </div>
+            
+                                    </div>
+                                    
+                        <%counter++ } })
+                        }) %>
+                        <div class="has-text-centered">
+                            <button class="button is-success mt-5" type="submit">Confirm</button>
+                        </div>
+                    
+                    </form>
+                </div>
+
+        
+        </div>
+
+</body>
+
+</html>

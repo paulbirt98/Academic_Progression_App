@@ -18,33 +18,24 @@
 
                         <div class="column is-three-fifths">
                             <div class="columns is-vcentered">
-                                <div class="column is-narrow has-text-weight-bold">Filter by: </div>
+                                <div class="column"></div>
 
                                 <div class="column">
-                                    <div class="control select is-fullwidth">
-                                        <select>
-                                            <option value="" disabled selected>Pathway</option>
-                                        </select>
-                                    </div>
+                                    
                                 </div>
                                 
                                 <div>
-                                    <div class="control">
-                                        <input class="input" type="number" placeholder="Stage">
-                                    </div>
+                                    
                                 </div>
 
                                 <div class="column">
-                                    <div class="control">
-                                    <input class="input" type="text" placeholder="Name">
-                                    </div>
+                                    
                                 </div>
                             </div>
 
                         </div>
                         <div class="column is-one-fifth is-flex is-justify-content-space-between">
                             <a class="button is-success mx-2" href="/admin/<%= topic === 'Student' ? 'add-student' : 'add-module'%>">Add Record</a>
-                            <div class="button is-danger" href="">Delete Record</div>
                         </div>
                     </div>
 
@@ -63,9 +54,13 @@
                                         <%= topic === "Student" ? item.moreInfo : item.moreInfo.replace('AY', '').replace('_', '/') %>
                                     </div>
                                     <div class="column is-one-fifth">
-                                        <a class="button is-info has-text-black is-fullwidth" href="/admin/<%=topic.toLowerCase()%>s/view/<%= item.idReference %>">
-                                            View <%=topic %> Record
+                                        <a class="button is-info has-text-black is-fullwidth mb-2" href="/admin/<%=topic.toLowerCase()%>s/view/<%= item.idReference %>">
+                                            View Record
                                         </a>
+                                        <form action="/admin/<%= topic === 'Student' ? 'student' : 'module'%>/delete" method="post" class="has-text-centered">
+                                            <input type="hidden" name="id" value="<%= item.idReference %>">
+                                            <button class="button is-danger is-fullwidth" type="submit">Delete</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

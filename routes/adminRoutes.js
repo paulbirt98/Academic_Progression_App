@@ -30,22 +30,22 @@ const getProgressionDecision = (student, modules, academicYear, stage) => {
     const credits = student.attained_credits;
 
     for (const module of modules) {
-        if(module.year_delivered === stage && module.academic_year === academicYear){
+        if (module.year_delivered === stage && module.academic_year === academicYear) {
             if (module.core && !module.final_attempt && !module.passed) {
-            return "Failed Core Module - repeat the year"
+                return "Failed Core Module - repeat the year"
             }
 
-            if (module.final_attempt && !module.passed){
-            return "Failed final attempt - withdraw from the course"
-            } 
+            if (module.final_attempt && !module.passed) {
+                return "Failed final attempt - withdraw from the course"
+            }
         }
     };
 
-    if(!credits[stage] || credits[stage] < 100){
+    if (!credits[stage] || credits[stage] < 100) {
         return "Insufficient Credits - repeat the year"
     }
 
-    if(stage === 2 && (!credits[1] || credits[1] < 120)){
+    if (stage === 2 && (!credits[1] || credits[1] < 120)) {
         return "All stage 1 modules must be passed to progress - please contact your advisor of studies"
     }
 
@@ -160,7 +160,8 @@ router.get('/students/view/:id', async (req, res) => {
                 years: yearsStudied,
                 modules: modulesStudied,
                 studentId: studentURLId,
-                isStudent: false
+                isStudent: false,
+                isAdmin: true
             });
         } catch (err) {
             console.error('Database error:', err);
@@ -171,7 +172,84 @@ router.get('/students/view/:id', async (req, res) => {
     }
 });
 
-router.get('/student-progression', async (req, res) =>{
+router.get('/edit-grades/:id', async (req, res) => {
+    if (req.session.isAdmin) {
+        const studentDataQuery = `SELECT 
+                                        CONCAT(first_name, ' ', last_name) AS name,
+                                        student_id_number AS id_number,
+                                        stage
+                                    FROM student WHERE student_id = ?`;
+
+        const studentPathwayQuery = `SELECT
+                                        pathway.pathway_name
+                                    FROM student
+                                    JOIN pathway ON student.pathway_id = pathway.pathway_id
+                                    WHERE student.student_id = ?`;
+
+        const yearsStudiedQuery = `SELECT DISTINCT 
+                                        module.academic_year
+                                    FROM student_module
+                                    JOIN module ON student_module.module_id = module.module_id
+                                    WHERE student_module.student_id = ?
+                                    ORDER BY academic_year; `
+
+        const modulesStudiedQuery = `SELECT DISTINCT
+                                        module.module_title,
+                                        module.semester,
+                                        module.academic_year,
+                                        module.credit_count,
+                                        student_module.first_grade,
+                                        student_module.grade_result,
+                                        student_module.resit_grade,
+                                        student_module.resit_result,
+                                        student_module.final_attempt,
+                                        (SELECT module_pathway.core
+                                            FROM module_pathway
+                                            WHERE module_pathway.module_id = module.module_id
+                                            AND module_pathway.pathway_id = student.pathway_id
+                                            LIMIT 1
+                                        ) AS core,
+                                        module_pathway.year_delivered
+                                    FROM student_module
+                                    JOIN module 
+                                        ON student_module.module_id = module.module_id
+                                    JOIN student 
+                                        ON student_module.student_id = student.student_id
+                                    LEFT JOIN module_pathway
+                                        ON module.module_id = module_pathway.module_id
+                                    WHERE student_module.student_id = ?
+                                    ORDER BY module.academic_year, module.module_title;`
+
+
+        const studentURLId = req.params.id;
+
+        try {
+            const [studentData] = await db.promise().query(studentDataQuery, [studentURLId]);
+            const [studentPathway] = await db.promise().query(studentPathwayQuery, [studentURLId]);
+            const [yearsStudied] = await db.promise().query(yearsStudiedQuery, [studentURLId]);
+            const [modulesStudied] = await db.promise().query(modulesStudiedQuery, [studentURLId]);
+
+            res.render('editGrades', {
+                title: "Edit student grades - " + studentData[0].id_number,
+                topic: "student",
+                record: studentData[0],
+                pathway: studentPathway[0],
+                years: yearsStudied,
+                modules: modulesStudied,
+                studentId: studentURLId,
+                isStudent: false,
+                isAdmin: true
+            });
+        } catch (err) {
+            console.error('Database error:', err);
+            res.sendStatus(500);
+        }
+    } else {
+        res.redirect('/');
+    }
+});
+
+router.get('/student-progression', async (req, res) => {
     res.render('studentProgressionSearch');
 });
 
@@ -573,19 +651,20 @@ router.get('/grade-upload', async (req, res) => {
     }
 });
 
-router.get('/messaging', async (req, res) =>{
+router.get('/messaging', async (req, res) => {
 
-    if(req.session.isAdmin){
+    if (req.session.isAdmin) {
 
-        const pathwayOptionsQuery= `SELECT * FROM pathway`;
+        const pathwayOptionsQuery = `SELECT * FROM pathway`;
 
-        try{
+        try {
             const [pathwayOptions] = await db.promise().query(pathwayOptionsQuery);
 
-            res.render('messaging', {isStudent: false,
-                                    title: "Messaging & Announcements",
-                                    summary: "Send an Announcement to a cohort or a Message to an Individual",
-                                    pathways: pathwayOptions
+            res.render('messaging', {
+                isStudent: false,
+                title: "Messaging & Announcements",
+                summary: "Send an Announcement to a cohort or a Message to an Individual",
+                pathways: pathwayOptions
             });
         } catch (err) {
             console.error('Database error:', err);
@@ -598,8 +677,8 @@ router.get('/messaging', async (req, res) =>{
 
 });
 
-router.post('/messaging/announcement', async (req, res) =>{
-    const announcement = {...req.body};
+router.post('/messaging/announcement', async (req, res) => {
+    const announcement = { ...req.body };
 
     const addAnouncement = `INSERT INTO announcement
                                 (announcement_body)
@@ -612,27 +691,27 @@ router.post('/messaging/announcement', async (req, res) =>{
                                 (student_id, announcement_id)
                             VALues(?,?)`
 
-    try{
+    try {
         const [announcementInput] = await db.promise().query(addAnouncement, [announcement.announcement]);
         const announcementId = announcementInput.insertId;
 
         const [studentCohort] = await db.promise().query(cohortQuery, [announcement.pathway, announcement.stage])
 
-        for(const {student_id} of studentCohort) {
+        for (const { student_id } of studentCohort) {
             await db.promise().query(addToLinkTable, [student_id, announcementId])
         };
 
         res.redirect('/admin/messaging');
-    } catch (err){
+    } catch (err) {
         console.error('Database error:', err);
         res.sendStatus(500);
     }
 
-    
+
 });
 
-router.post('/messaging/message', async (req, res) =>{
-    const message = {...req.body};
+router.post('/messaging/message', async (req, res) => {
+    const message = { ...req.body };
 
     const addMessage = `INSERT INTO message
                             (student_id, message_body)
@@ -641,18 +720,97 @@ router.post('/messaging/message', async (req, res) =>{
     const studentQuery = `SELECT student_id FROM student
                         WHERE student_id_number = ?`
 
-    try{
+    try {
         const [student] = await db.promise().query(studentQuery, message.studentNo);
         const studentId = student[0].student_id;
 
         await db.promise().query(addMessage, [studentId, message.messageBody]);
 
         res.redirect('/admin/messaging');
-    } catch (err){
+    } catch (err) {
         console.error('Database error:', err);
         res.sendStatus(500);
     }
 
 });
+
+router.post('/admin/modules/delete', async (req, res) => {
+    const deleteRequest = { ...req.body };
+
+    const deleteStudentModule = `DELETE FROM student_module WHERE module_id = ?`;
+    const deleteModulePathway = `DELETE FROM module_pathway WHERE module_id = ?`;
+    const deleteModule = `DELETE FROM module WHERE module_id = ?`;
+
+    try {
+        await db.promise().query(deleteStudentModule, deleteRequest.id);
+        await db.promise().query(deleteModulePathway, deleteRequest.id);
+        await db.promise().query(deleteModule, deleteRequest.id);
+
+        res.redirect('/admin/modules');
+    } catch (err) {
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/admin/students/delete', async (req, res) => {
+    const deleteRequest = { ...req.body };
+
+    const deleteStudentModule = `DELETE FROM student_module WHERE student_id = ?`;
+    const deletestudentAnnouncement = `DELETE FROM student_announcement WHERE student_id = ?`;
+    const deleteMessages = `DELETE FROM message WHERE student_id = ?`;
+    const deleteAuth = `DELETE FROM authentication WHERE student_id = ?`;
+    const deleteStudent = `DELETE FROM student WHERE student_id = ?`;
+
+
+    try {
+        await db.promise().query(deleteStudentModule, deleteRequest.id);
+        await db.promise().query(deletestudentAnnouncement, deleteRequest.id);
+        await db.promise().query(deleteMessages, deleteRequest.id);
+        await db.promise().query(deleteAuth, deleteRequest.id);
+        await db.promise().query(deleteStudent, [deleteRequest.id]);
+
+        res.redirect('/admin/modules');
+    } catch (err) {
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }
+});
+
+router.post('/admin/edit-grades/:id', async (req, res) => {
+    const formData = { ...req.body };
+    const studentURLId = req.params.id;
+    const moduleCount = parseInt(formData.moduleCount, 10);
+
+    const updateQuery = ` UPDATE student_module 
+                            SET first_grade = ?, 
+                            grade_result = ?, 
+                            resit_grade = ?, 
+                            resit_result = ? 
+                            WHERE module_id = ? AND student_id = ?`;
+
+    try {
+        for (let i = 1; i <= moduleCount; i++) {
+            const params = [
+                formData[`grade${i}`],
+                formData[`graderesult${i}`],
+                formData[`resit${i}`],
+                formData[`resitresult${i}`],
+                formData[`moduleId${i}`],
+                studentURLId
+            ];
+
+            await db.promise().query(updateQuery, params);
+        } 
+    } catch (err) {
+        console.error('Database error:', err);
+        res.sendStatus(500);
+    }
+
+
+        res.redirect(`/admin/students/view/${studentURLId}`);
+    });
+
+
 
 module.exports = router;

@@ -36,6 +36,7 @@
                                         <div class="columns">
                                             <div class="column">
                                                 <p>Result</p>
+                                                
                                                 <p class="mt-2 mx-3 has-text-weight-bold is-size-4">
                                                     <% if(module.first_grade===null && module.grade_result==="fail" ) {
                                                         %>
@@ -69,8 +70,11 @@
                 </section>
 
                 <section>
-                    <div class="has-text-centered">
+                    <div class="has-text-centered mx-3">
                         <a class="button is-success title is-5 mt-5" href="<%= isStudent ? '/student/progression' : '/admin/student-progression/' + studentId %>">Progression Stats</a> 
+                        <% if (isAdmin) { %>
+                        <a class="button is-success title is-5 mt-5 mx-3" href="/admin/edit-grades/<%= studentId %>">Edit</a> 
+                        <% } %>
                     </div>
                 </section>
 

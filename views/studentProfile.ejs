@@ -61,7 +61,7 @@
                                 <div class="column field">
                                     <label class="label">Email</label>
                                     <div class="control">
-                                        <input class="input" type="text" class="is-fullwidth" name="nameField" value="<%= studentInfo.user_email%>">
+                                        <input class="input" type="text" class="is-fullwidth" name="nameField" readonly value="<%= studentInfo.user_email%>">
                                     </div>
                                 </div>
                             </div>
@@ -71,9 +71,9 @@
                                     <label class="label">Secondary Email</label>
                                     <div class="control">
                                         <% if (studentInfo.secondary_email) { %>
-                                        <input class="input" type="text" class="is-fullwidth" name="nameField" value="<%= studentInfo.user_email%>">
+                                        <input class="input" type="text" class="is-fullwidth" name="secondEmail" value="<%= studentInfo.user_email%>">
                                         <% } else { %>
-                                            <input class="input" type="text" class="is-fullwidth" name="nameField" value="N/A">
+                                            <input class="input" type="text" class="is-fullwidth" name="secondEmail" value="N/A">
                                         <% } %>
                                     </div>
                                 </div>

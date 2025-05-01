@@ -1,0 +1,10 @@
+<% if(!messages) { %>
+
+    <div class="box has-text-centered">No Messages</div>
+
+<% } else { 
+    messages.forEach((message) => { %>
+
+    <div class="box has-background-light has-text-centered"><%= message.message_body %> ~Admin</div>
+    
+<% }) } %>
