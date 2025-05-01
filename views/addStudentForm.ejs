@@ -29,7 +29,7 @@
             <div class="control select is-fullwidth">
                 <select name="pathway" required>
                     <option value="" disabled selected>Select from the list</option>
-                    <!--for each loop dynami filling with pathways-->
+                    <!--for each loop dynamic filling with pathways-->
                     <% pathways.forEach((pathway) =>{ %>
                         <option value="<%= pathway.pathway_id %>"><%= pathway.pathway_name %></option>
                     <% }) %>
