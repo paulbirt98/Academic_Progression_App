@@ -1,0 +1,54 @@
+<%- include('documentHead') %>
+
+    <body>
+        
+        <%- include('navbar')%>
+
+        <div class="columns" style="min-height: 100vh; margin: 0;">
+
+            <div class="column p-5" style="flex-grow: 1;">
+
+                <section class="hero is-light">
+                    <div class="hero-body">
+                        <p class="title">Welcome, <%= studentName %> </p>
+                    </div>
+                </section>
+
+                <div class="columns mt-5">
+                    <div class="column">
+                        <a href="/student/profile" class="box">
+                            <p class="title is-5">Edit Profile</p>
+                            <p>View and edit your Profile picture, or add a secondary email</p>
+                        </a>
+                    </div>
+                    <div class="column">
+                        <a href="/student/my-grades" class="box">
+                            <p class="title is-5">My Grades</p>
+                            <p>View your module results</p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="columns mt-5 is-centered">
+                    <div class="column is-half">
+                        <a href="/student/progression" class="box">
+                            <p class="title is-5">Progression</p>
+                            <p>View your progression stats</p>
+                        </a>
+                    </div>
+                </div>
+
+                <%- include('logo') %>
+                <div class="has-text-centered">
+                    <a href="/">
+                        <button class="button is-success">Log Out</button>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+    </body>

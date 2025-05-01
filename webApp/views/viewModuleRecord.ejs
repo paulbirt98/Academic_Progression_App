@@ -1,0 +1,91 @@
+<%- include('documentHead') %>
+
+<body>
+
+    <%-include('navbar') %>
+
+    <div class="column p-5" style="flex-grow: 1;">
+
+        <%- include('recordPageHeader') %>
+        
+        <div class="columns">
+            <div class="column is-half">
+                <p class="title is-3 mx-4 mt-5">Results</p>
+                <% students.forEach((student) => { %>
+
+                    <% if((student.grade_result && student.grade_result.includes('pass')) || (student.resit_result && student.resit_result.includes('pass'))) { %>
+                        <div class="box mx-3 mt-5 has-background-success" href="/admin/students/view/<%=student.student_id%>">
+                    <% } else if(student.resit_result === "excused" || (student.grade_result === "excused" && !student.resit_result)) { %>
+                        <div class="box mx-3 mt-5 has-background-warning" href="/admin/students/view/<%=student.student_id%>">
+                    <% } else { %>
+                        <div class="box mx-3 mt-5 has-background-danger" href="/admin/students/view/<%=student.student_id%>">
+                    <% } %>
+                
+                            <div class="columns has-text-centered">
+                                <div class="column has-text-weight-bold">
+                                    <a href="/admin/students/view/<%=student.student_id%>" class="has-text-dark"><%= student.name %></a>
+                                </div>
+                                <div class="column">
+                                    <p>
+                                        Result -     
+                                        <% if((student.first_grade === null || student.grade_result === 0) && (student.grade_result.includes('fail') || student.grade_result.includes('absent'))) { %>
+                                            0 
+                                        <% } else if (student.grade_result.includes('excused')) { %>
+                                                N/A 
+                                        <% } else { %>
+                                                <%= student.first_grade %>
+                                        <% } %>
+                                    </p>  
+                                </div>
+                                <div class="column">
+                                    <p>
+                                        Resit - 
+                                        <% if (student.resit_result === 0) { %>
+                                            0
+                                        <% } else if (!student.resit_result) { %>
+                                            N/A 
+                                        <% } else { %>
+                                            <%= student.resit_grade %>
+                                        <% } %>
+                                    </p>
+                                </div>
+                                <div class="column">
+                                    <p>
+                                        <% if(student.grade_result === "pass" || student.resit_result === "pass") { %>
+                                            Pass
+                                        <% } else if(student.grade_result === "pass capped" || student.resit_result === "pass capped") { %>
+                                            Pass Capped
+                                        <% } else if(student.resit_result === "excused" || (student.grade_result === "excused" && !student.resit_result)) { %>
+                                            Excused
+                                        <% } else { %>
+                                            Fail
+                                        <% } %>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                <% }); %>
+            </div>
+
+            <div class="column">
+                <p class="title is-3 mx-4 mt-5">Module Progression Stats</p>
+
+                <div class="box has-background-light has-text-centered">
+                    <p class="title is-5">Total Enrolled: <%= totalEnrolled %></p>
+                </div>
+                <div class="box has-background-light has-text-centered">
+                    <p class="title is-5">Average Grade</p>
+                    <p class="title is-2"><%= averageGrade %>%</p>
+                </div>
+                <div class="box has-background-light has-text-centered">
+                    <p class="title is-5">Resits</p>
+                    <p class="title is-2"><%= resits %></p>
+                </div>
+                <div class="box has-background-light has-text-centered">
+                    <p class="title is-5">Excused: <%= excused %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>s

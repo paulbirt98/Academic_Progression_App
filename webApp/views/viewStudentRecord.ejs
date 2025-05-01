@@ -1,0 +1,86 @@
+<%-include('documentHead') %>>
+
+<body>
+
+    <%- include('navbar') %>
+
+        <div class="column p-5" style="flex-grow: 1;">
+
+            <%- include('recordPageHeader') %>
+
+                <section>
+                    <div class="columns mt-5 mx-3" style="white-space: nowrap;">
+
+                        <!--a column for each year of study-->
+                        <% years.forEach((year)=> { %>
+                            <div class="column">
+                                <div class="box mx-3 has-text-centered has-background-primary subtitle is-5">
+                                    Academic Year <%= year.academic_year.replace("AY", "" ).replace("_", "/" ) %>
+                                </div>
+
+                                <% modules.forEach((module)=> {
+                                    if(module.academic_year === year.academic_year) {
+                                    %>
+
+                                    <div class="box mx-3 has-text-centered">
+
+                                        <p class="subtitle is-6">
+                                            <%= module.module_title %>
+                                                <% if (module.core) { %>
+                                                    <strong>(Core)</strong>
+                                                    <% } %>
+                                                        <% if (module.final_attempt) { %>
+                                                            <strong>(Repeat)</strong>
+                                                            <% } %>
+                                        </p>
+                                        <div class="columns">
+                                            <div class="column">
+                                                <p>Result</p>
+                                                
+                                                <p class="mt-2 mx-3 has-text-weight-bold is-size-4">
+                                                    <% if(module.first_grade===null && module.grade_result==="fail" ) {
+                                                        %>
+                                                        0 <% } else if (module.first_grade===null &&
+                                                            (module.grade_result==="absent" ||
+                                                            module.grade_result==="excused" )) { %>
+                                                            N/A
+                                                            <% } else { %>
+                                                                <%= module.first_grade %>
+                                                                    <% } %>
+                                                </p>
+                                                <p>
+                                                    <%= module.grade_result || "" %>
+                                                </p>
+                                            </div>
+                                            <div class="column">
+                                                <p>Resit</p>
+                                                <p class="mt-2 has-text-weight-bold is-size-4">
+                                                    <%= module.resit_grade===null ? "N/A" : module.resit_grade %>
+                                                </p>
+                                                <p>
+                                                    <%= module.resit_result || "" %>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% } }) %>
+                            </div>
+                            <% }); %>
+                    </div>
+                </section>
+
+                <section>
+                    <div class="has-text-centered mx-3">
+                        <a class="button is-success title is-5 mt-5" href="<%= isStudent ? '/student/progression' : '/admin/student-progression/' + studentId %>">Progression Stats</a> 
+                        <% if (isAdmin) { %>
+                        <a class="button is-success title is-5 mt-5 mx-3" href="/admin/edit-grades/<%= studentId %>">Edit</a> 
+                        <% } %>
+                    </div>
+                </section>
+
+        </div>
+
+
+</body>
+
+</html>

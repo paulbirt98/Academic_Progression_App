@@ -1,0 +1,88 @@
+<%- include('documentHead') %>
+
+    <body>
+            
+        <%- include('navbar')%>
+
+        <div class="columns" style="min-height: 100vh; margin: 0;">
+
+            <div class="column p-5" style="flex-grow: 1;">
+
+                <section class="hero is-light">
+                    <div class="hero-body">
+                        <p class="title">Your Profile</p>
+                    </div>
+                </section>
+
+                <div class="columns">
+
+                    <div class="column is-one-third is-flex is-justify-content-center is-align-items-center">
+
+                        <figure class="image is-128x128 mt-5">
+                            <img class="is-rounded" src="https://bulma.io/assets/images/placeholders/128x128.png" />
+                        </figure>
+
+                        
+                    </div>
+
+                    <div class="column">
+                        <form action="/profile" method="post">
+                            <div class="columns mt-5 mx-3">
+                                <div class="column is-half field">
+                                    <label class="label">Name</label>
+                                    <div class="control">
+                                        <input class="input" type="text" class="is-fullwidth" name="nameField" readonly value="<%= studentInfo.name%>">
+                                    </div>
+                                </div>
+                                <div class="column is-half field">
+                                    <label class="label">Student Number</label>
+                                    <div class="control">
+                                        <input class="input" type="text" class="is-fullwidth" name="nameField" readonly value="<%= studentInfo.student_id_number%>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="columns mx-3">
+                                <div class="column is-half field">
+                                    <label class="label">Course</label>
+                                    <div class="control">
+                                        <input class="input" type="text" class="is-fullwidth" name="nameField" readonly value="<%= studentInfo.course%>">
+                                    </div>
+                                </div>
+                                <div class="column is-half field">
+                                    <label class="label">Stage</label>
+                                    <div class="control">
+                                        <input class="input" type="text" class="is-fullwidth" name="nameField" readonly value="<%= studentInfo.stage%>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="columns mx-3">
+                                <div class="column field">
+                                    <label class="label">Email</label>
+                                    <div class="control">
+                                        <input class="input" type="text" class="is-fullwidth" name="nameField" readonly value="<%= studentInfo.user_email%>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="columns mx-3">
+                                <div class="column field">
+                                    <label class="label">Secondary Email</label>
+                                    <div class="control">
+                                        <% if (studentInfo.secondary_email) { %>
+                                        <input class="input" type="text" class="is-fullwidth" name="secondEmail" value="<%= studentInfo.user_email%>">
+                                        <% } else { %>
+                                            <input class="input" type="text" class="is-fullwidth" name="secondEmail" value="N/A">
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="button is-success mt-5 mx-5" type="submit">Save and Exit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>

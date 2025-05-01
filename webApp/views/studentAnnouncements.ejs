@@ -1,0 +1,10 @@
+<% if(!announcements) { %>
+
+    <div class="box has-text-centered">No Announcements</div>
+
+<% } else { 
+    announcements.forEach((announcement) => { %>
+
+    <div class="box has-background-light has-text-centered"><%= announcement.announcement_body %> ~Admin</div>
+    
+<% }) } %>

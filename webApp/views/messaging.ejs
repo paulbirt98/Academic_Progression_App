@@ -1,0 +1,83 @@
+<%-include('documentHead') %>
+
+    <body>
+
+        <%- include('navbar') %>
+
+            <div class="column p-5" style="flex-grow: 1;">
+
+                <%-include('adminPageHeader')%>
+
+                
+                    <section>
+                        <div class="title is-2 has-text-centered mt-3">
+                            Announcements
+                        </div>
+
+                        <% if(!isStudent) { %>
+                            <%-include('adminAnnouncementForm') %>
+                        <% } else if (isStudent) { %>
+                            <%-include('studentAnnouncements')%>
+                        <% } %>
+
+                        <%if (query.messageSuccess) { %>
+                            <div class="notification is-light mt-4 mx-3">
+                                Announcement sent successfully!
+                            </div>
+                        <% } %>
+                    </section>
+
+                    <section>
+                        <div class="title is-2 has-text-centered mt-4">
+                            Messages
+                        </div>
+
+                        <% if(!isStudent) { %>
+                            <%-include('adminMessageForm') %>
+                        <% } else if (isStudent) { %>
+                            <%-include('studentMessages')%>
+                        <% } %>
+
+                        <%if (query.messageSuccess) { %>
+                            <div class="notification is-light mt-4 mx-3">
+                                Message sent successfully!
+                            </div>
+                        <% } %>
+
+                    </section>
+
+                    <% if(isStudent) { %>
+                        <div class="title is-4 has-text-centered mt-4">
+                            Contact your Advisor
+                        </div>
+
+                        <form action="/student/messaging" method="post">
+                            <div class="columns mx-3">
+                                <div class="column is-half field">
+                                    <label class="label">Message</label>
+                                    <div class="control">
+                                        <input class="textarea" type="text" name="messageBody" required>
+                                    </div>
+                                </div>
+                        
+                                
+                                <div class="column field">
+                                    <label class="label">Subject</label>
+                                    <div class="control">
+                                        <input class="input" type="text" name="studentNo" required>
+                                    </div>
+                                </div>
+                             
+                                <div class="column is-one-fifth mt-2">
+                                    <button class="button is-success mt-5" type="submit">Send Announcement</button>
+                                </div> 
+                            </div>
+                        </form>
+
+                    <% } %>
+
+            </div>
+
+    </body>
+
+</html>

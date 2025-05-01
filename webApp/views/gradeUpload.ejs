@@ -1,0 +1,47 @@
+<%- include('documentHead') %>
+
+<body>
+
+    <%- include('navbar') %>   
+
+        <div class="columns" style="min-height: 100vh; margin: 0;">
+
+            <div class="column p-5" style="flex-grow: 1;">
+            <%- include('adminPageHeader') %>
+
+            <div class="columns is-fullheight">
+
+                <div class="column mt-5 mx-3 has-text-centered">
+
+                    <section class="mb-6 mt-6">
+                        <br>
+                        <br>
+                    </section>
+
+                    <div class="mt-6">
+                        <form action="/admin/upload-grades" method="POST" enctype="multipart/form-data">
+                            <div class="file mt-5 is-large is-boxed is-warning is-centered has-name responsive-file-box">
+                                <label class="file-label">
+                                    <input class="file-input" type="file" name="gradeUpload" />
+                                    <span class="file-cta">
+                                    <span class="file-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </span>
+                                    <span class="file-label"> 
+                                        Choose File...
+                                    </span>
+                                    </span>
+                                    <span class="file-name"> Screen Shot 2017-07-29 at 15.54.25.png </span>
+                                </label>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+
+                <div class="column mt-5 mx-3">
+                    <%- include('logo') %>
+                </div>
+            </div>
+        </div>
+</body>
